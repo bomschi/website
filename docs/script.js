@@ -1,6 +1,13 @@
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const root = document.documentElement;
 const scenes = [...document.querySelectorAll('[data-scene]')];
+const chapterLinks = [...document.querySelectorAll('.site-header nav a[href^="#"]')];
+const chapters = chapterLinks.map((link) => ({
+  link,
+  section: document.querySelector(link.getAttribute('href'))
+}));
+const sceneProgress = new WeakMap();
+let displayedPageProgress;
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -25,6 +32,17 @@ function setStepProgress(scene, progress) {
 
     if (scene.classList.contains('safety-scene')) {
       step.style.transform = `translateX(${(1 - localProgress) * -48}px)`;
+    }
+
+    if (scene.classList.contains('stack-scene')) {
+      const start = [237, 246, 239];
+      const end = [80, 255, 131];
+      const color = start.map((channel, colorIndex) =>
+        Math.round(channel + (end[colorIndex] - channel) * localProgress)
+      );
+
+      step.style.setProperty('--step-progress', localProgress.toFixed(3));
+      step.style.setProperty('--step-color', `rgb(${color.join(', ')})`);
     }
   });
 }
@@ -158,15 +176,37 @@ function drawComplexityGraph(scene, progress) {
 }
 
 function update() {
-  const viewportHeight = window.innerHeight;
+  let needsAnotherFrame = false;
+  const viewportHeight = scenes[0]?.querySelector('.scene-sticky')?.offsetHeight || window.innerHeight;
   const scrollRange = document.documentElement.scrollHeight - viewportHeight;
-  root.style.setProperty('--page', scrollRange > 0 ? (window.scrollY / scrollRange).toFixed(4) : 0);
+  const targetPageProgress = scrollRange > 0 ? window.scrollY / scrollRange : 0;
+  if (displayedPageProgress === undefined || reducedMotion) displayedPageProgress = targetPageProgress;
+  else displayedPageProgress += (targetPageProgress - displayedPageProgress) * 0.18;
+  if (Math.abs(targetPageProgress - displayedPageProgress) > 0.0005) needsAnotherFrame = true;
+  else displayedPageProgress = targetPageProgress;
+  root.style.setProperty('--page', displayedPageProgress.toFixed(4));
+
+  const readingLine = viewportHeight * 0.35;
+  const activeChapter = chapters.find(({ section }) => {
+    if (!section) return false;
+    const rect = section.getBoundingClientRect();
+    return rect.top <= readingLine && rect.bottom > readingLine;
+  });
+  chapters.forEach(({ link }) => {
+    if (link === activeChapter?.link) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  });
 
   scenes.forEach((scene) => {
     const rect = scene.getBoundingClientRect();
     const travel = Math.max(rect.height - viewportHeight, 1);
     const rawProgress = clamp(-rect.top / travel);
-    const progress = reducedMotion ? 1 : clamp(rawProgress / 0.82);
+    const targetProgress = reducedMotion ? 1 : clamp(rawProgress / 0.84);
+    let progress = sceneProgress.has(scene) ? sceneProgress.get(scene) : targetProgress;
+    if (!reducedMotion) progress += (targetProgress - progress) * 0.18;
+    if (Math.abs(targetProgress - progress) > 0.0005) needsAnotherFrame = true;
+    else progress = targetProgress;
+    sceneProgress.set(scene, progress);
     const centered = progress - 0.5;
 
     scene.style.setProperty('--p', progress.toFixed(4));
@@ -186,6 +226,7 @@ function update() {
     if (scene.classList.contains('math-scene')) drawComplexityGraph(scene, progress);
   });
 
+  return needsAnotherFrame;
 }
 
 let scheduled = false;
@@ -193,11 +234,36 @@ function requestUpdate() {
   if (scheduled) return;
   scheduled = true;
   window.requestAnimationFrame(() => {
-    update();
     scheduled = false;
+    if (update()) requestUpdate();
   });
 }
 
 window.addEventListener('scroll', requestUpdate, { passive: true });
 window.addEventListener('resize', requestUpdate);
-update();
+
+document.querySelectorAll('.site-header a[href^="#"], [data-jump-top]').forEach((link) => {
+  link.addEventListener('click', (event) => {
+    const hash = link.getAttribute('href');
+    const target = hash ? document.querySelector(hash) : null;
+    if (!target) return;
+
+    event.preventDefault();
+    root.classList.add('is-jumping');
+    displayedPageProgress = undefined;
+    scenes.forEach((scene) => sceneProgress.delete(scene));
+
+    target.scrollIntoView({ behavior: 'instant', block: 'start' });
+    const url = hash === '#top'
+      ? `${window.location.pathname}${window.location.search}`
+      : `${window.location.pathname}${window.location.search}${hash}`;
+    window.history.pushState(null, '', url);
+    update();
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => root.classList.remove('is-jumping'));
+    });
+  });
+});
+
+requestUpdate();
