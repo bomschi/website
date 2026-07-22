@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://roelans.de/sitemap.xml
