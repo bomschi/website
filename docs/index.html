@@ -1,11 +1,154 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World! Site Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="David Roelans — full stack developer, AI lover, mathematician, and careful builder.">
+    <meta name="theme-color" content="#080b09">
+    <meta property="og:title" content="David Roelans / Software, reason, restraint">
+    <meta property="og:description" content="Full stack development, AI, mathematics, and a better-safe-than-sorry mindset.">
+    <meta property="og:type" content="website">
+    <title>David Roelans / Software, reason, restraint</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+    <link rel="stylesheet" href="styles.css?v=20260722-2">
+    <script src="script.js?v=20260722-7" defer></script>
   </head>
   <body>
-    <h1>Hello World!</h1>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="page-progress" aria-hidden="true"><span></span></div>
+
+    <header class="site-header">
+      <a class="identity" href="#top" aria-label="David Roelans, top of page">
+        <span class="identity-mark">DR</span>
+        <span>David Roelans</span>
+      </a>
+      <nav aria-label="Page chapters">
+        <a href="#stack">Stack</a>
+        <a href="#ai">AI</a>
+        <a href="#math">Math</a>
+        <a href="#safety">Safety</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero-sticky">
+          <div class="hero-meta">
+            <span>Software engineer</span>
+          </div>
+
+          <h1 aria-label="I like the whole problem">
+            <span class="hero-line hero-line-one">I like the</span>
+            <span class="hero-line hero-line-two">whole</span>
+            <span class="hero-line hero-line-three">problem<span>.</span></span>
+          </h1>
+
+          <p class="hero-intro">David Roelans is a full stack developer, AI lover, and mathematician who prefers one check too many to one surprise too late.</p>
+
+        </div>
+      </section>
+
+      <section class="chapter-intro" aria-label="Overview">
+        <p>Not a list of technologies.</p>
+        <p>A look at how I think<br>when I make software.</p>
+        <span aria-hidden="true">↓</span>
+      </section>
+
+      <section class="skill-scene stack-scene" id="stack" data-scene>
+        <div class="scene-sticky">
+          <header class="scene-heading">
+            <h2>Full stack<br><em>developer.</em></h2>
+            <p>Frontend, backend, data, deployment. I like knowing where a request came from, where it is going, and where it can fail.</p>
+          </header>
+
+          <div class="stack-map" aria-label="A request travelling through four layers">
+            <div class="stack-track" aria-hidden="true"><span></span></div>
+            <div class="stack-node" data-step="0">
+              <span>01</span><strong>Browser</strong><small>intent becomes input</small>
+            </div>
+            <div class="stack-node" data-step="1">
+              <span>02</span><strong>Logic</strong><small>input becomes behavior</small>
+            </div>
+            <div class="stack-node" data-step="2">
+              <span>03</span><strong>Data</strong><small>behavior meets state</small>
+            </div>
+            <div class="stack-node" data-step="3">
+              <span>04</span><strong>Runtime</strong><small>the system meets reality</small>
+            </div>
+          </div>
+
+          <div class="scene-readout" aria-hidden="true"><span data-counter>000</span><small>% traced</small></div>
+        </div>
+      </section>
+
+      <section class="skill-scene ai-scene" id="ai" data-scene>
+        <div class="scene-sticky">
+          <div class="token-field" aria-hidden="true">
+            <span class="token" data-x="-240" data-y="-150">CONTEXT</span>
+            <span class="token" data-x="180" data-y="-210">TOOLS</span>
+            <span class="token" data-x="-120" data-y="190">EVALS</span>
+            <span class="token" data-x="290" data-y="130">MODELS</span>
+            <span class="token" data-x="-310" data-y="30">DATA</span>
+            <span class="token" data-x="140" data-y="260">AGENTS</span>
+            <span class="token" data-x="330" data-y="-40">PROMPTS</span>
+            <span class="token" data-x="-40" data-y="-280">CURIOSITY</span>
+          </div>
+
+          <header class="scene-heading">
+            <h2>AI<br><em>lover.</em></h2>
+            <p>I love AI most when it is treated as a tool to explore, test, and extend—not as a magic word pasted over a product.</p>
+          </header>
+
+          <p class="ai-statement">CURIOUS<br><span>&gt;</span> HYPE</p>
+        </div>
+      </section>
+
+      <section class="skill-scene math-scene" id="math" data-scene>
+        <div class="scene-sticky">
+          <header class="scene-heading">
+            <h2>Mathe&shy;matician.</h2>
+            <p>A single pass grows linearly with the input. Comparing every item with every other item grows quadratically. The difference between n and n² is a small decision that becomes a large software cost.</p>
+          </header>
+
+          <div class="math-board complexity-board" aria-hidden="true">
+            <canvas data-complexity-canvas></canvas>
+            <div class="graph-legend"><span><i></i>O(n) / one pass</span><span><i></i>O(n²) / every pair</span></div>
+            <p class="graph-note">same input / very different work</p>
+            <p class="graph-sample"><span data-graph-n>0</span> items → <strong data-graph-n2>0</strong> pair comparisons</p>
+          </div>
+
+          <p class="math-equation">f(n) = n <span>versus</span> f(n) = n²</p>
+        </div>
+      </section>
+
+      <section class="skill-scene safety-scene" id="safety" data-scene>
+        <div class="scene-sticky">
+          <header class="scene-heading">
+            <h2>Better safe<br><em>than sorry.</em></h2>
+            <p>I assume systems will be misunderstood, inputs will be strange, and recovery will matter. That is not pessimism. It is engineering.</p>
+          </header>
+
+          <div class="safety-gates">
+            <div data-step="0"><span>01</span><strong>Question the input</strong><i>checked</i></div>
+            <div data-step="1"><span>02</span><strong>Name the assumption</strong><i>checked</i></div>
+            <div data-step="2"><span>03</span><strong>Expect the failure</strong><i>checked</i></div>
+            <div data-step="3"><span>04</span><strong>Keep a way back</strong><i>checked</i></div>
+          </div>
+
+          <p class="safety-mantra" aria-hidden="true">VERIFY<br>TWICE.</p>
+        </div>
+      </section>
+
+      <section class="closing" aria-labelledby="closing-title">
+        <span>David Roelans / 2026</span>
+        <h2 id="closing-title">Build the whole thing.<br>Understand the model.<br><em>Check your work.</em></h2>
+      </section>
+    </main>
+
+    <footer>
+      <span>© <span id="year">2026</span> David Roelans</span>
+      <span>No framework. No sales pitch.</span>
+      <a href="#top">Again ↑</a>
+    </footer>
   </body>
 </html>
